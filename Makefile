@@ -4,13 +4,9 @@ CWD := $(shell pwd)
 DIST := ${CWD}/dist
 
 
-run: tailwind
+run:
 	gleam run -m lustre/dev start
 .PHONY: run
-
-tailwind:
-	gleam run -m tailwind/run
-.PHONY: tailwind
 
 build: tailwind
 	gleam run -m lustre/dev build app
@@ -21,11 +17,11 @@ dist:
 	echo ${DIST}
 	mkdir  ${DIST}
 	gleam run -m lustre/dev build app --outdir=dist --minify=true
-	mv ${CWD}/deploy/prod/html/index.html ${DIST}/index.html 
+	cp ${CWD}/deploy/prod/html/index.html ${DIST}/index.html 
 
 deploy-web: dist
 	-rm -rf tmp
 	git clone https://github.com/inqizit-public/gleam-template.git tmp
 	cd tmp; git checkout gh-pages; rm -rf *; cp ${DIST}/* .; git add .; git commit -m "deploy"; git push
-	# -rm -rf tmp
+	-rm -rf tmp
 
